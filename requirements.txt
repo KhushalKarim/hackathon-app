@@ -45,7 +45,7 @@ optree==0.15.0
 packaging
 pandas
 pillow
-protobuf
+protobuf==3.20.3
 pyarrow
 pydeck
 Pygments==2.19.1
