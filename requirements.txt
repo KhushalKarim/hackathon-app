@@ -30,7 +30,7 @@ Markdown==3.8
 markdown-it-py==3.0.0
 MarkupSafe
 mdurl==0.1.2
-mkl-service==2.4.0
+mkl-service==2.4.2
 mkl_fft
 mkl_random
 ml_dtypes==0.5.1
