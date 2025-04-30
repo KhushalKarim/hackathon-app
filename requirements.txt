@@ -72,12 +72,12 @@ tensorflow==2.19.0
 tensorflow-io-gcs-filesystem==0.31.0
 termcolor==3.1.0
 tf_keras==2.19.0
-tokenizers==0.21.1
+tokenizers
 toml
 torch==2.7.0
 tornado
 tqdm==4.67.1
-transformers==4.0.0
+transformers
 typing_extensions
 tzdata
 urllib3
