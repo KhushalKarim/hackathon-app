@@ -2,11 +2,11 @@ import os
 import streamlit as st
 from PIL import Image, Image as PILImage
 import pytesseract
-import fitz  # PyMuPDF
+import fitz
 from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
 
 # Streamlit UI setup
-st.title("🩺 Prescription Checker App")
+st.title("🩺 Second Opinion App For Patients")
 
 # Helper functions for text extraction
 def extract_text_from_image(file):
