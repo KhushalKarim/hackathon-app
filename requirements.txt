@@ -24,13 +24,13 @@ fsspec==2025.3.2
 gast==0.6.0
 gitdb
 GitPython
-google-api-core==2.24.2
+google-api-core
 google-auth==2.39.0
-google-cloud-vision==3.10.1
+google-cloud-vision
 google-pasta==0.2.0
 googleapis-common-protos==1.70.0
 grpcio==1.71.0
-grpcio-status==1.71.0
+grpcio-status
 h5py==3.13.0
 httplib2==0.22.0
 huggingface-hub==0.30.2
