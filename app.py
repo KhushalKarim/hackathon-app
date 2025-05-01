@@ -75,7 +75,7 @@ if presc_text.strip() and meds.strip():
                 if line.strip():
                     st.write("•", line.strip())
         except Exception as e:
-            st.error(f⚠️ Error generating questions: {e}")
+            st.error(f"Error generating questions: {e}")  # Corrected line
 else:
     st.info("Please upload a prescription and enter medicine names to generate questions.")
 
