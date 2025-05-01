@@ -1,11 +1,17 @@
 import os
 import streamlit as st
 from PIL import Image
-from transformers import pipeline
+import pytesseract
+import fitz  # PyMuPDF
+from transformers import BlipProcessor, BlipForConditionalGeneration, pipeline  # Import pipeline
+import torch
 
-# Load Hugging Face models for text extraction (OCR) and summarization
-ocr_model = pipeline("image-to-text", model="facebook/dino-vitb16")  # Replace with an actual OCR model if needed
-summarizer = pipeline("summarization", model="Falconsai/text_summarization")
+# Load BLIP processor and model for image-to-text
+processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+
+# Summarizer model
+summarizer = pipeline("summarization", model="Falconsai/text_summarization")  # Ensure pipeline is imported
 
 # UI Title
 st.title("🩺 Second Opinion App for Patients")
@@ -22,13 +28,26 @@ uploaded_file = st.file_uploader(
 
 # Helper functions
 def extract_text_from_image(file):
-    img = Image.open(file)
-    return ocr_model(img)
+    image = Image.open(file).convert("RGB")
+    inputs = processor(images=image, return_tensors="pt")
+    output = blip_model.generate(**inputs)
+    caption = processor.decode(output[0], skip_special_tokens=True)
+    return caption
 
 def extract_text_from_pdf(file):
-    # PDF processing for OCR
-    # You may want to implement PDF-to-image conversion if needed using libraries like pdf2image
-    pass
+    pdf_bytes = file.read()
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    full_text = ""
+    for page in doc:
+        text = page.get_text()
+        if text.strip():
+            full_text += text + "\n"
+        else:
+            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))  # Increase resolution for better OCR
+            img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+            ocr_text = pytesseract.image_to_string(img)
+            full_text += ocr_text + "\n"
+    return full_text
 
 # Step 2: Extract and display text
 presc_text = ""
@@ -75,7 +94,7 @@ if presc_text.strip() and meds.strip():
                 if line.strip():
                     st.write("•", line.strip())
         except Exception as e:
-            st.error(f"Error generating questions: {e}")  # Corrected line
+            st.error(f"Error generating questions: {e}")
 else:
     st.info("Please upload a prescription and enter medicine names to generate questions.")
 
