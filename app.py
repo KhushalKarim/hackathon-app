@@ -1,12 +1,10 @@
 import os
 import streamlit as st
-from PIL import Image, Image as PILImage
-import pytesseract
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # Adjust if needed
-import fitz  # PyMuPDF
+from PIL import Image
 from transformers import pipeline
 
-# Load Hugging Face summarization model
+# Load Hugging Face models for text extraction (OCR) and summarization
+ocr_model = pipeline("image-to-text", model="facebook/dino-vitb16")  # Replace with an actual OCR model if needed
 summarizer = pipeline("summarization", model="Falconsai/text_summarization")
 
 # UI Title
@@ -25,22 +23,12 @@ uploaded_file = st.file_uploader(
 # Helper functions
 def extract_text_from_image(file):
     img = Image.open(file)
-    return pytesseract.image_to_string(img)
+    return ocr_model(img)
 
 def extract_text_from_pdf(file):
-    pdf_bytes = file.read()
-    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    full_text = ""
-    for page in doc:
-        text = page.get_text()
-        if text.strip():
-            full_text += text + "\n"
-        else:
-            pix = page.get_pixmap(matrix=fitz.Matrix(2, 2))
-            img = PILImage.frombytes("RGB", [pix.width, pix.height], pix.samples)
-            ocr_text = pytesseract.image_to_string(img)
-            full_text += ocr_text + "\n"
-    return full_text
+    # PDF processing for OCR
+    # You may want to implement PDF-to-image conversion if needed using libraries like pdf2image
+    pass
 
 # Step 2: Extract and display text
 presc_text = ""
@@ -87,7 +75,7 @@ if presc_text.strip() and meds.strip():
                 if line.strip():
                     st.write("•", line.strip())
         except Exception as e:
-            st.error(f"⚠️ Error generating questions: {e}")
+            st.error(f⚠️ Error generating questions: {e}")
 else:
     st.info("Please upload a prescription and enter medicine names to generate questions.")
 
